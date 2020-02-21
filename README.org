@@ -1,0 +1,44 @@
+https://www.youtube.com/watch?v=IekPZpfbdaI
+
+* Clinical Collaboration Platform
+** What is Unique problem?
+  Patient care provided by a set of care providers (doctors etc.).  Hence a form fill-up is hightly collaborative done by multiple users.  If someone is fillup a field, then other users are shown disabled fields in real-time. If in another approach you lock the form then users have to call up IT to unlock, if some user forgets about it after opening it. Also these forms are filled up from Web and Mobile.
+
+** Architecture
+   - Client is rich client just with view
+   - Server holds state and business logic.  State is about patient and varioius clients change the state and needs to be done transactionally.
+
+** Declarative Form Definition
+   This definition allows to generate any artifacts web, mobile etc. (Model Driven Development)
+   The generated form also allows locking of certain fields in the form if another user is editing it.
+   - Patient Intake Form
+     #+begin_src clojure
+     {:title "Patient Intake Form"
+      :metadata {:form-name "patient-intake-form"}
+      :model {:height {:path "patient/vitals/height"
+                       :validation [:required]}
+              :weight {:path "patient/vitals/weight"}
+              :bmi    {:path "patient/vitals/bmi"}}
+      :views {:default {:form [[:widget {:type :section :title "Vitals"}
+                                        [:widget {:type :numeric :label "Height (cm)" :path :height}]
+                                        [:widget {:type :numeric :label "Weight (kg)" :path :weight}]
+                                        [:widget {:type :numeric :label "BMI" :path :bmi}]]]}}
+      :business-rules [{:id :calculate-bmi
+                        :type :action
+                        :inputs [:height :weight]
+                        :outputs [:bmi]
+                        :fn (fn [ctx [height weight] [bmi]]
+                              )}]
+      :ui-rules []}
+     #+end_src
+
+** Data Governance
+   changed  application data it to fed to analytics through another FHIR model. github.com/HealthSamurai/ironhide
+   https://github.com/HealthSamurai/ironhide
+   https://github.com/fhir-fuel/fhir-fuel.github.io
+   https://www.health-samurai.io/fhirbase
+   https://fhirbase.aidbox.app/fhirpath.pg
+   https://github.com/fhirbase/fhirbase
+
+   
+
